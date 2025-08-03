@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Sample.Data.TenantDB;
 
 namespace Sample.Service.Service.Client
 {
@@ -35,6 +36,8 @@ namespace Sample.Service.Service.Client
             _unitOfWork.ClientRepository.Add(client);
             _unitOfWork.Commit();
 
+            
+
             return Task.FromResult(dto);
         }
 
@@ -55,10 +58,11 @@ namespace Sample.Service.Service.Client
 
         public Task<List<ClientDto>> GetAllCLients()
         {
-            var clients = _unitOfWork.ClientRepository.GetQuerable().ToList();
+            var clients = _unitOfWork.ClientRepository.GetQuerable();
 
             var clientDtos = clients.Select(c => new ClientDto
             {
+                Id = c.ClientId,
                 ClientName = c.ClientName,
                 ClientType = c.ClientType,
                 OrganizationName = c.OrganizationName,

@@ -1,29 +1,36 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace CBS.Data
 {
-    public interface ITenantUnitOfWorkFactory
+    public class TenantDbContextFactory : IDesignTimeDbContextFactory<TenantDbContext>
     {
-        IUnitOfWork Create(string tenantId);
-    }
-
-    public class TenantUnitOfWorkFactory : ITenantUnitOfWorkFactory
-    {
-        private readonly ITenantDbContextFactory _dbContextFactory;
-
-        public TenantUnitOfWorkFactory(ITenantDbContextFactory dbContextFactory)
+        public TenantDbContext CreateDbContext(string[] args)
         {
-            _dbContextFactory = dbContextFactory;
-        }
+            // Find the path to your API project where appsettings.json exists
+            var basePath = Path.Combine(Directory.GetCurrentDirectory(), "../Sample.API");
 
-        public IUnitOfWork Create(string tenantId)
-        {
-            var dbContext = _dbContextFactory.CreateDbContext(tenantId);
-            return new TenantUnitOfWork(dbContext);
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(basePath)
+                .AddJsonFile("appsettings.json", optional: false)
+                .Build();
+
+            var connectionString = configuration.GetConnectionString("TenantConnection");
+
+            if (string.IsNullOrEmpty(connectionString))
+                throw new Exception("Tenant connection string not found.");
+
+            var optionsBuilder = new DbContextOptionsBuilder<TenantDbContext>();
+            optionsBuilder.UseSqlServer(connectionString);
+
+            return new TenantDbContext(optionsBuilder.Options);
         }
     }
 }
