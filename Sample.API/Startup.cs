@@ -208,6 +208,7 @@ namespace CBS.API
             app.UseSession();
 
             app.UseMiddleware<TenantMiddleware>();
+
             app.UseMiddleware<PermissionMiddleware>();
             app.Use(async (context, next) =>
             {
