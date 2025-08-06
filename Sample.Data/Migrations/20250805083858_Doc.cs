@@ -5,7 +5,7 @@
 namespace Sample.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class MoveClientsToTenantDb1 : Migration
+    public partial class Doc : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

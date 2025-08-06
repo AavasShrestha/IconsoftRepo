@@ -18,5 +18,8 @@ namespace Sample.Data.TenantDB
         public string Gender { get; set; }
         public string City { get; set; }
         public string Description { get; set; }
+
+        public ICollection<Document> Documents { get; set; }
+
     }
 }
