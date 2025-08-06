@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Sample.Data.Migrations
 {
     [DbContext(typeof(TenantDbContext))]
-    partial class TenantDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250805083123_Table")]
+    partial class Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,12 +142,6 @@ namespace Sample.Data.Migrations
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("DocumentType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -153,11 +150,14 @@ namespace Sample.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
 
-                    b.HasIndex("CreatedBy");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Documents", (string)null);
                 });
@@ -170,15 +170,15 @@ namespace Sample.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("CBS.Data.TenantDB.User", "CreatedByUser")
+                    b.HasOne("CBS.Data.TenantDB.User", "User")
                         .WithMany("Documents")
-                        .HasForeignKey("CreatedBy")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Client");
 
-                    b.Navigation("CreatedByUser");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CBS.Data.TenantDB.User", b =>

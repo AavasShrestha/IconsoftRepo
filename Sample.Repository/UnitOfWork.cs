@@ -14,6 +14,7 @@ namespace CBS.Repository
         private IRepository<Tenant> _tenantRepository;
         private IRepository<User> _userRepository;
         private IRepository<Client> _clientRepository;
+        private IRepository<Document> _documentRepository;
 
         public UnitOfWork(TenantDbContext dbContext)
         {
@@ -27,6 +28,10 @@ namespace CBS.Repository
             _userRepository ?? (_userRepository = new Repository<User>(_dbContext));
         public IRepository<Client> ClientRepository =>
             _clientRepository ?? (_clientRepository = new Repository<Client>(_dbContext));
+
+        public IRepository<Document> DocumentRepository =>
+            _documentRepository ?? (_documentRepository = new Repository<Document>(_dbContext));
+
 
         public bool Commit()
         {

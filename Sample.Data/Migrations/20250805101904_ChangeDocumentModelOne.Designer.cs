@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Sample.Data.Migrations
 {
     [DbContext(typeof(TenantDbContext))]
-    [Migration("20250803061758_MoveClientsToTenantDb1")]
-    partial class MoveClientsToTenantDb1
+    [Migration("20250805101904_ChangeDocumentModelOne")]
+    partial class ChangeDocumentModelOne
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,8 +39,8 @@ namespace Sample.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -79,7 +79,7 @@ namespace Sample.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("User");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Sample.Data.TenantDB.Client", b =>
@@ -129,6 +129,69 @@ namespace Sample.Data.Migrations
                     b.HasKey("ClientId");
 
                     b.ToTable("Clients", (string)null);
+                });
+
+            modelBuilder.Entity("Sample.Data.TenantDB.Document", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DocumentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.ToTable("Documents", (string)null);
+                });
+
+            modelBuilder.Entity("Sample.Data.TenantDB.Document", b =>
+                {
+                    b.HasOne("Sample.Data.TenantDB.Client", "Client")
+                        .WithMany("Documents")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CBS.Data.TenantDB.User", "CreatedByUser")
+                        .WithMany("Documents")
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("CreatedByUser");
+                });
+
+            modelBuilder.Entity("CBS.Data.TenantDB.User", b =>
+                {
+                    b.Navigation("Documents");
+                });
+
+            modelBuilder.Entity("Sample.Data.TenantDB.Client", b =>
+                {
+                    b.Navigation("Documents");
                 });
 #pragma warning restore 612, 618
         }

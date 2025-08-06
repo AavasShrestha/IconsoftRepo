@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Sample.Service.Service.Client;
+using Sample.Service.Service.Document;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -241,6 +242,7 @@ namespace CBS.API
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddScoped<IClientService, ClientService>();
+            services.AddScoped<IDocumentService, DocumentService>();
             #endregion DependencyInjection
         }
     }

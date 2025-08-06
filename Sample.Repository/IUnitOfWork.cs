@@ -11,7 +11,7 @@ namespace CBS.Repository
         IRepository<Tenant> TenantRepository { get; }
         IRepository<User> UserRepository { get; }
         IRepository<Client> ClientRepository { get; }
-
+        IRepository<Document> DocumentRepository { get; }
         bool Commit();
 
         List<T> ExecuteStoredProcedure<T>(string storedProcedure, Func<DbDataReader, T> map, params SqlParameter[] parameters);
